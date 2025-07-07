@@ -23,5 +23,10 @@ export enum FormTexts {
     Balance ="Miktar",
     EnterReceiver ="Alıcı Hesabı Gir",
     Receiver ="Alıcı Hesabı",
-    MoneyTransfer = "Para Transferi"
+    MoneyTransfer = "Para Transferi",
+    AccountCreate = "Hesap Oluşturma",
+    UserRegister = "Kullanıcı Kaydı",
+    Home = "Anasayfa",
+    Reset= "Temizle"
+    
 }

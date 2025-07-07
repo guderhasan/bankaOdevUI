@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Controller, useForm } from "react-hook-form";
 import { IQueryFormValues } from "./type";
-import { Form, Button, Container, Row, FormText } from "react-bootstrap";
+import { Form, Button, Container } from "react-bootstrap";
 import { FormTexts } from "../../localization/tr/formTexts/type";
 import useAxios, { configure } from "axios-hooks";
 import axios, { HttpStatusCode } from "axios";
@@ -13,6 +13,7 @@ import {
   IAccountCreateRequest,
   IAccountCreateResponse,
 } from "../../model/AccountCretae/type";
+import NavbarPage from "../Navbar";
 
 const AccountCreate = () => {
   //Farklı dosyalarda konfigurasyonları yapılabilir.
@@ -23,9 +24,11 @@ const AccountCreate = () => {
 
   //ContextApi ile id alındı, security yapılmadığından bu öntem uygulandı
   const userId = useContext(Context);
-  const { handleSubmit, getValues, control } = useForm<IQueryFormValues>({
-    defaultValues: { name: "" },
-  });
+  const { handleSubmit, getValues, control, reset } = useForm<IQueryFormValues>(
+    {
+      defaultValues: { name: "" },
+    }
+  );
 
   const [, createAccountServiceCall] = useAxios<
     IAccountCreateResponse,
@@ -54,32 +57,46 @@ const AccountCreate = () => {
   };
 
   return (
-    <Container>
-      <Form>
-        <Form.Label className=" d-flex justify-content-center mt-5">
-          {FormTexts.CreateAcoount}
-        </Form.Label>
-        <Form.Group className="mb-3" controlId="email">
-          <Form.Label>{FormTexts.AccountName}</Form.Label>
-          <Controller
-            control={control}
-            name="name"
-            render={({ field: { onChange, value, ref } }) => (
-              <Form.Control
-                type="text"
-                placeholder={FormTexts.EnterAccountName}
-                onChange={onChange}
-                value={value}
-                ref={ref}
-              />
-            )}
-          />
-        </Form.Group>
-        <Button variant="success" type="submit" onClick={handleSubmit(create)}>
-          {FormTexts.Create}
-        </Button>
-      </Form>
-    </Container>
+    <>
+      <NavbarPage />
+      <Container>
+        <Form>
+          <Form.Label className=" d-flex justify-content-center mt-5">
+            {FormTexts.CreateAcoount}
+          </Form.Label>
+          <Form.Group className="mb-3" controlId="email">
+            <Form.Label>{FormTexts.AccountName}</Form.Label>
+            <Controller
+              control={control}
+              name="name"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Control
+                  type="text"
+                  placeholder={FormTexts.EnterAccountName}
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                />
+              )}
+            />
+          </Form.Group>
+          <div className="d-grid gap-2">
+            <Button
+              variant="success"
+              type="submit"
+              onClick={handleSubmit(create)}
+            >
+              {FormTexts.Create}
+            </Button>
+          </div>
+          <div className="d-flex gap-2 mt-2">
+            <Button variant="secondary" type="submit" onClick={() => reset}>
+              {FormTexts.Reset}
+            </Button>
+          </div>
+        </Form>
+      </Container>
+    </>
   );
 };
 

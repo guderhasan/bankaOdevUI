@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -18,8 +18,8 @@ import {
 import AccountsTable from "./AccountsTable";
 import AccountsModal from "../../modals/AccountDetailModal";
 import TransactionHistoryModal from "../../modals/TransactionHistoryModal";
-import AccountDetailModal from "../../modals/AccountDetailModal";
 import AccountUpdateModal from "../../modals/AccountUpdateModal";
+import NavbarPage from "../Navbar";
 
 const Accounts: React.FC = () => {
   //Farklı dosyalarda konfigurasyonları yapılabilir.
@@ -37,10 +37,11 @@ const Accounts: React.FC = () => {
     useState<boolean>(false);
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
 
-  const { handleSubmit, getValues, control, setValue } =
-    useForm<IQueryFormValues>({
+  const { handleSubmit, getValues, control, reset } = useForm<IQueryFormValues>(
+    {
       defaultValues: { nameORNumber: "" },
-    });
+    }
+  );
   const searchTypeVal = useWatch({
     control,
     name: "searchType",
@@ -100,8 +101,14 @@ const Accounts: React.FC = () => {
     }
   };
 
+  const resetFields = () => {
+    reset();
+    setAccountsData([]);
+  };
+
   return (
     <>
+      <NavbarPage />
       <Container>
         <Row>
           <Form>
@@ -148,18 +155,29 @@ const Accounts: React.FC = () => {
                 )}
               />
             </Form.Group>
-            <Button
-              className="mt-2"
-              variant="success"
-              type="submit"
-              onClick={
-                searchTypeVal === true
-                  ? handleSubmit(name)
-                  : handleSubmit(number)
-              }
-            >
-              {FormTexts.Search}
-            </Button>
+            <div className="d-grid gap-2">
+              <Button
+                className="mt-2"
+                variant="success"
+                type="submit"
+                onClick={
+                  searchTypeVal === true
+                    ? handleSubmit(name)
+                    : handleSubmit(number)
+                }
+              >
+                {FormTexts.Search}
+              </Button>
+            </div>
+            <div className="d-flex gap-2 mt-2">
+              <Button
+                variant="secondary"
+                type="submit"
+                onClick={() => resetFields()}
+              >
+                {FormTexts.Reset}
+              </Button>
+            </div>
           </Form>
         </Row>
         <Row className="mt-sm-5">
