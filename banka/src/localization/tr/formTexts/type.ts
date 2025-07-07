@@ -1,0 +1,27 @@
+export enum FormTexts {
+    //localization kullanılabilirdi.
+    Email = "Email",
+    EnterMail = "Email Giriniz",
+    Password = "Şifre",
+    EnterPassword = "Şifre Giriniz",
+    UserName = "Kullanıcı Adı",
+    EnterUserName = "Kullanıcı Adı Giriniz",
+    Create = "Oluştur",
+    RegisterMessage = "KAYIT OL",
+    AccountName = "Hesap Adı",
+    CreateAcoount = "HESAP OLUŞTUR",
+    EnterAccountName = "Hesap Adı Giriniz",
+    AccountNumber = "Hesap Numarası",
+    EnterAccountNumber = "Hesap Numarası Giriniz",
+    ByName = "Hesap Adı",
+    ByNumber = "Hesap Numarası",
+    Search = "Ara",
+    Accounts = "Hesaplar",
+    AccountByNameSearch = "Hesap Adına Göre Ara",
+    Transfer = "Transfer",
+    EnterBalance = "Miktar Gir",
+    Balance ="Miktar",
+    EnterReceiver ="Alıcı Hesabı Gir",
+    Receiver ="Alıcı Hesabı",
+    MoneyTransfer = "Para Transferi"
+}

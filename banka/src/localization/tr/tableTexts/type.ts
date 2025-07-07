@@ -1,0 +1,21 @@
+export enum TableTexts{
+    AccountName = "Hesap Adı",
+    AccountNumber = "Hesap Numarası",
+    Detail = "Detay",
+    AccountDetail = "Hesap Detayı",
+    AccountDelete = "Hesabı Sil",
+    AccountUpdate = "Hesabı Güncelle",
+    Update = "Güncelle",
+    Delete = "Sil",
+    AccountUpdatedDate = "Güncelleme Tarihi",
+    AccountCeratedDate="Oluşturma Tarihi",
+    AccountBalance = "Bakiye",
+    TransactionHistory = "İşlemler",
+    AccountTransactionHistory = "Hesap İşlem Geçmişi",
+    TransactionDate = "İşlem Tarihi",
+    TransactionReceiver = "Alıcı Hesap",
+    TransactionSender = "Göderen Hesap",
+    TransactionStatus = "İşlem Durumu",
+    TransactionAmount = "İşlem Miktarı",
+    Transfer= "Transferler"
+}
