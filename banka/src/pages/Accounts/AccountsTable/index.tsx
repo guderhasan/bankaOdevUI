@@ -2,7 +2,7 @@ import React from "react";
 
 import DataTable from "react-data-table-component";
 import { IAccountsTableProps } from "../type";
-import { Button, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { TableTexts } from "../../../localization/tr/tableTexts/type";
 import axios, { HttpStatusCode } from "axios";
 import useAxios, { configure } from "axios-hooks";
@@ -108,8 +108,9 @@ const AccountsTable: React.FC<IAccountsTableProps> = ({
     const response = await accountDeleteCall();
     if (response?.status === HttpStatusCode.Ok) {
       searchTypeVal ? name() : number();
+      toast(Messages.DeleteSuccess);
     } else {
-      toast(Messages.Exception);
+      toast(Messages.DeleteError);
     }
   };
 

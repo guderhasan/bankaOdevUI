@@ -13,5 +13,7 @@ export enum Messages {
   UpdateSuccessMessage = "Güncelleme Başarılı",
   Update = "Güncelle",
   TransferErrorMessage ="Transfer Başarısız",
-  TransferSuccessMessage = "Transfer Başarılı"
+  TransferSuccessMessage = "Transfer Başarılı",
+  DeleteError = "Silme Başarısız",
+  DeleteSuccess = "Silme Başarılı"
 }

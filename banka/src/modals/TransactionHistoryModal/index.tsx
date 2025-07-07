@@ -30,7 +30,10 @@ const TransactionHistoryModal: React.FC<ITransactionHistoryModalProps> = ({
   axios.defaults.headers.common["Content-Type"] = "application/json";
   configure({ axios });
 
-  const handleClose = () => setOpenModal(false);
+  const handleClose = () => {
+    setOpenModal(false);
+    setTransactionHistoryData([]);
+  };
 
   const [, transactionHistoryCall] = useAxios<
     ITransactionHistoryResponse[],
@@ -49,7 +52,11 @@ const TransactionHistoryModal: React.FC<ITransactionHistoryModalProps> = ({
   const transactionHistory = async () => {
     const response = await transactionHistoryCall();
     if (response?.status === HttpStatusCode.Ok) {
-      setTransactionHistoryData(response?.data);
+      if (response?.data?.length) {
+        setTransactionHistoryData(response?.data);
+      } else {
+        toast(Messages.NoData);
+      }
     } else {
       toast(Messages.NoData);
     }

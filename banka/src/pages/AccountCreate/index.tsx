@@ -7,7 +7,7 @@ import { FormTexts } from "../../localization/tr/formTexts/type";
 import useAxios, { configure } from "axios-hooks";
 import axios, { HttpStatusCode } from "axios";
 import { Messages } from "../../localization/tr/messages/type";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Context } from "../GlobalContext";
 import {
   IAccountCreateRequest,
@@ -39,7 +39,7 @@ const AccountCreate = () => {
       method: "POST",
       // Normalde data kullanılmalı fakat data payload okunamadığından dolayı params kullanıldı
       params: {
-        number: Math.random(),
+        number: "Bank-" + (100 + Math.random() * 999).toFixed(),
         name: getValues("name"),
         id: userId,
       },
@@ -50,9 +50,9 @@ const AccountCreate = () => {
   const create = async () => {
     const response = await createAccountServiceCall();
     if (response?.status === HttpStatusCode.Ok) {
-      toast(Messages.CreateSuccessMessage + response?.data);
-    } else {
       toast(Messages.CreateSuccessMessage);
+    } else {
+      toast(Messages.CreateErrorMessage);
     }
   };
 
@@ -78,6 +78,7 @@ const AccountCreate = () => {
                   ref={ref}
                 />
               )}
+              rules={{ required: true }}
             />
           </Form.Group>
           <div className="d-grid gap-2">
@@ -96,6 +97,7 @@ const AccountCreate = () => {
           </div>
         </Form>
       </Container>
+      <ToastContainer />
     </>
   );
 };

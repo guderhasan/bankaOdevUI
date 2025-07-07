@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { IQueryFormValues } from "./type";
 import { ITransferRequest, ITransferResponse } from "../../model/Transfer/type";
 import { Messages } from "../../localization/tr/messages/type";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Button, Container, Form } from "react-bootstrap";
 import { FormTexts } from "../../localization/tr/formTexts/type";
 import { useContext } from "react";
@@ -44,7 +44,11 @@ const Transfer: React.FC = () => {
   const transfer = async () => {
     const response = await trasferServiceCall();
     if (response?.status === HttpStatusCode.Ok) {
-      toast(Messages.TransferSuccessMessage + response?.data);
+      if (response?.data?.status === "SUCCESS") {
+        toast(Messages.TransferSuccessMessage);
+      } else {
+        toast(Messages.TransferErrorMessage);
+      }
     } else {
       toast(Messages.TransferErrorMessage);
     }
@@ -72,6 +76,7 @@ const Transfer: React.FC = () => {
                   ref={ref}
                 />
               )}
+              rules={{ required: true }}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="balance">
@@ -88,6 +93,7 @@ const Transfer: React.FC = () => {
                   ref={ref}
                 />
               )}
+              rules={{ required: true }}
             />
           </Form.Group>
           <div className="d-grid gap-2">
@@ -106,6 +112,7 @@ const Transfer: React.FC = () => {
           </div>
         </Form>
       </Container>
+      <ToastContainer />
     </>
   );
 };

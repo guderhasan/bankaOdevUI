@@ -1,9 +1,8 @@
 import React from "react";
-import { Message } from "primereact/message";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Controller, useForm } from "react-hook-form";
 import { IQueryFormValues } from "./type";
-import { Form, Button, Container, Row, FormText } from "react-bootstrap";
+import { Form, Button, Container } from "react-bootstrap";
 import { FormTexts } from "../../localization/tr/formTexts/type";
 import useAxios, { configure } from "axios-hooks";
 import axios, { HttpStatusCode } from "axios";
@@ -12,7 +11,7 @@ import {
   IUserRegisterResponse,
 } from "../../model/UserRegister/type";
 import { Messages } from "../../localization/tr/messages/type";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import NavbarPage from "../Navbar";
 
 const UserRegister = () => {
@@ -48,7 +47,7 @@ const UserRegister = () => {
   const register = async () => {
     const response = await registerServiceCall();
     if (response?.status === HttpStatusCode.Ok) {
-      toast(Messages.RegisterSuccessMessage + response?.data);
+      toast(Messages.RegisterSuccessMessage);
     } else {
       toast(Messages.RegisterErrorMessage);
     }
@@ -76,6 +75,7 @@ const UserRegister = () => {
                   ref={ref}
                 />
               )}
+              rules={{ required: true }}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="password">
@@ -92,6 +92,7 @@ const UserRegister = () => {
                   ref={ref}
                 />
               )}
+              rules={{ required: true }}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="userName">
@@ -108,6 +109,7 @@ const UserRegister = () => {
                   ref={ref}
                 />
               )}
+              rules={{ required: true }}
             />
           </Form.Group>
           <div className="d-grid gap-2">
@@ -126,6 +128,7 @@ const UserRegister = () => {
           </div>
         </Form>
       </Container>
+      <ToastContainer />
     </>
   );
 };

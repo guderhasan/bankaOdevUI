@@ -82,8 +82,12 @@ const Accounts: React.FC = () => {
   const name = async () => {
     const response = await accountByNameServiceCall();
     if (response?.status === HttpStatusCode.Ok) {
-      setAccountsData(response?.data);
-      toast("" + response?.data);
+      if (response?.data?.length) {
+        setAccountsData(response?.data);
+      } else {
+        setAccountsData([]);
+        toast(Messages.NoData);
+      }
     } else {
       setAccountsData([]);
       toast(Messages.NoData);
@@ -93,8 +97,12 @@ const Accounts: React.FC = () => {
   const number = async () => {
     const response = await accountByNumberServiceCall();
     if (response?.status === HttpStatusCode.Ok) {
-      setAccountsData(response?.data);
-      toast("" + response?.data);
+      if (response?.data?.length) {
+        setAccountsData(response?.data);
+      } else {
+        setAccountsData([]);
+        toast(Messages.NoData);
+      }
     } else {
       setAccountsData([]);
       toast(Messages.NoData);
@@ -137,6 +145,7 @@ const Accounts: React.FC = () => {
                     ref={ref}
                   />
                 )}
+                rules={{ required: true }}
               />
             </Form.Group>
             <Form.Group>

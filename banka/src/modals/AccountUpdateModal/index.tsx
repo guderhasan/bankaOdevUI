@@ -1,14 +1,8 @@
-import React, { useEffect, useState } from "react";
-
-import DataTable from "react-data-table-component";
+import React from "react";
 import { Button, Container, Form, Modal } from "react-bootstrap";
-import { TableTexts } from "../../localization/tr/tableTexts/type";
+import {} from "../../localization/tr/tableTexts/type";
 import { IAccountUpdateModalProps, IQueryFormValues } from "./type";
 import useAxios, { configure } from "axios-hooks";
-import {
-  IAccountDetailRequest,
-  IAccountDetailResponse,
-} from "../../model/AccountDetail/type";
 import axios, { HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
 import { Messages } from "../../localization/tr/messages/type";
@@ -24,7 +18,6 @@ const AccountUpdateModal: React.FC<IAccountUpdateModalProps> = ({
   open,
   setOpenModal,
 }) => {
-  const [accountData, setAccountData] = useState<IAccountDetailResponse[]>();
   //Farklı dosyalarda konfigurasyonları yapılabilir.
   const BASE_API_URL = "http://localhost:8080/api";
   axios.defaults.baseURL = BASE_API_URL;
@@ -91,6 +84,7 @@ const AccountUpdateModal: React.FC<IAccountUpdateModalProps> = ({
                     ref={ref}
                   />
                 )}
+                rules={{ required: true }}
               />
             </Form.Group>
           </Container>

@@ -5,12 +5,12 @@ import { Button, Container, Modal } from "react-bootstrap";
 import { TableTexts } from "../../localization/tr/tableTexts/type";
 import { IAccountsModalProps } from "./type";
 import useAxios, { configure } from "axios-hooks";
+import { ToastContainer, toast } from "react-toastify";
 import {
   IAccountDetailRequest,
   IAccountDetailResponse,
 } from "../../model/AccountDetail/type";
 import axios, { HttpStatusCode } from "axios";
-import { toast } from "react-toastify";
 import { Messages } from "../../localization/tr/messages/type";
 
 const AccountsModal: React.FC<IAccountsModalProps> = ({
@@ -25,7 +25,10 @@ const AccountsModal: React.FC<IAccountsModalProps> = ({
   axios.defaults.headers.common["Content-Type"] = "application/json";
   configure({ axios });
 
-  const handleClose = () => setOpenModal(false);
+  const handleClose = () => {
+    setOpenModal(false);
+    setAccountData([]);
+  };
 
   const [, accountDetailCall] = useAxios<
     IAccountDetailResponse,
@@ -44,7 +47,11 @@ const AccountsModal: React.FC<IAccountsModalProps> = ({
   const accountDetail = async () => {
     const response = await accountDetailCall();
     if (response?.status === HttpStatusCode.Ok) {
-      setAccountData([response?.data]);
+      if (response?.data) {
+        setAccountData([response?.data]);
+      } else {
+        toast(Messages.NoData);
+      }
     } else {
       toast(Messages.NoData);
     }
@@ -76,26 +83,29 @@ const AccountsModal: React.FC<IAccountsModalProps> = ({
     },
   ];
   return (
-    <div
-      className="modal show"
-      style={{ display: "block", position: "initial" }}
-    >
-      <Modal show={open} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{Messages.AccountDetail}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Container>
-            <DataTable columns={columns} data={accountData || []} />
-          </Container>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            {Messages.Close}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+    <>
+      <div
+        className="modal show"
+        style={{ display: "block", position: "initial" }}
+      >
+        <Modal show={open} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>{Messages.AccountDetail}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Container>
+              <DataTable columns={columns} data={accountData || []} />
+            </Container>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              {Messages.Close}
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+      <ToastContainer />
+    </>
   );
 };
 export default AccountsModal;
