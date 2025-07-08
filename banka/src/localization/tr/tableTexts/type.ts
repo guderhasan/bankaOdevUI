@@ -17,5 +17,6 @@ export enum TableTexts{
     TransactionSender = "Göderen Hesap",
     TransactionStatus = "İşlem Durumu",
     TransactionAmount = "İşlem Miktarı",
-    Transfer= "Transferler"
+    Transfer = "Transferler",
+    SendMoney = "Gönder",
 }

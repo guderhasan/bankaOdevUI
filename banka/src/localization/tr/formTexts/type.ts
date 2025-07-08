@@ -27,6 +27,8 @@ export enum FormTexts {
     AccountCreate = "Hesap Oluşturma",
     UserRegister = "Kullanıcı Kaydı",
     Home = "Anasayfa",
-    Reset= "Temizle"
+    Reset = "Temizle",
+    LoginMessage = "Giriş Yap",
+    Login ="Giriş Yap"
     
 }

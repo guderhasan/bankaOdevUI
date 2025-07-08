@@ -19,6 +19,7 @@ const AccountsTable: React.FC<IAccountsTableProps> = ({
   setOpenModal,
   setOpenModalUpdate,
   setOpenModalTransaction,
+  setOpenModalTransfer,
   accountId,
   name,
   number,
@@ -28,6 +29,7 @@ const AccountsTable: React.FC<IAccountsTableProps> = ({
   const BASE_API_URL = "http://localhost:8080/api";
   axios.defaults.baseURL = BASE_API_URL;
   axios.defaults.headers.common["Content-Type"] = "application/json";
+
   configure({ axios });
 
   const columns = [
@@ -91,19 +93,34 @@ const AccountsTable: React.FC<IAccountsTableProps> = ({
         </button>
       ),
     },
+    {
+      button: true,
+      name: TableTexts.SendMoney,
+      cell: (row: any) => (
+        <button
+          className="btn btn-info btn-xs"
+          onClick={(e) => handleButtonClickTransfer(e, row?.number)}
+        >
+          {TableTexts.SendMoney}
+        </button>
+      ),
+    },
   ];
 
   const [, accountDeleteCall] = useAxios<
     IAccountDeleteResponse,
     IAccountDeleteRequest
-  >({
-    url: "/accounts/delete",
-    method: "DELETE",
-    // Normalde data kullanılmalı fakat data payload okunamadığından dolayı params kullanıldı
-    params: {
-      id: accountId,
+  >(
+    {
+      url: "/accounts/delete",
+      method: "DELETE",
+
+      params: {
+        id: accountId,
+      },
     },
-  });
+    { manual: true }
+  );
   const accountDelete = async () => {
     const response = await accountDeleteCall();
     if (response?.status === HttpStatusCode.Ok) {
@@ -134,6 +151,13 @@ const AccountsTable: React.FC<IAccountsTableProps> = ({
     setAccountId(id);
     setOpenModalTransaction(true);
   };
+
+  const handleButtonClickTransfer = (e: any, number: any) => {
+    e.preventDefault();
+    setAccountId(number);
+    setOpenModalTransfer(true);
+  };
+
   return (
     <Container>
       <DataTable columns={columns} data={accountData || []} />

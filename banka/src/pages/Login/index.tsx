@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { IQueryFormValues } from "./type";
@@ -6,51 +6,71 @@ import { Form, Button, Container } from "react-bootstrap";
 import { FormTexts } from "../../localization/tr/formTexts/type";
 import useAxios, { configure } from "axios-hooks";
 import axios, { HttpStatusCode } from "axios";
-import {
-  IUserRegisterRequest,
-  IUserRegisterResponse,
-} from "../../model/UserRegister/type";
 import { Messages } from "../../localization/tr/messages/type";
 import { toast, ToastContainer } from "react-toastify";
 import NavbarPage from "../Navbar";
+import { ILoginRequest, ILoginResponse } from "../../model/Login/type";
+import { AuthContext } from "../../AuthContext";
+import { useNavigate } from "react-router";
+import { IUserRequest, IUserResponse } from "../../model/User/type";
 
-const UserRegister = () => {
+const Login = () => {
+  const { setUserId, setUserName } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   //Farklı dosyalarda konfigurasyonları yapılabilir.
   const BASE_API_URL = "http://localhost:8080/api";
   axios.defaults.baseURL = BASE_API_URL;
   axios.defaults.headers.common["Content-Type"] = "application/json";
-
   configure({ axios });
 
   const { handleSubmit, control, reset } = useForm<IQueryFormValues>({
-    defaultValues: { email: "", password: "", userName: "" },
+    defaultValues: { password: "", userName: "" },
   });
-  const [userNameVal, passwordVal, emailVal] = useWatch({
+  const [userNameVal, passwordVal] = useWatch({
     control,
-    name: ["userName", "password", "email"],
+    name: ["userName", "password"],
   });
-  const [, registerServiceCall] = useAxios<
-    IUserRegisterResponse,
-    IUserRegisterRequest
-  >(
+
+  const [, loginServiceCall] = useAxios<ILoginResponse, ILoginRequest>(
     {
-      url: "/users/register",
+      url: "/users/login",
       method: "POST",
-      params: {
-        email: emailVal,
+      data: {
         password: passwordVal,
-        userName: userNameVal,
+        username: userNameVal,
       },
     },
     { manual: true }
   );
 
-  const register = async () => {
-    const response = await registerServiceCall();
+  const [, userCall] = useAxios<IUserResponse, IUserRequest>(
+    {
+      url: "/users/search/findByUsername",
+      method: "GET",
+      params: {
+        username: userNameVal,
+      },
+    },
+    { manual: true }
+  );
+
+  const loginUser = async () => {
+    const response = await loginServiceCall();
     if (response?.status === HttpStatusCode.Ok) {
-      toast(Messages.RegisterSuccessMessage);
+      localStorage.setItem("token", response?.data?.token);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${response?.data?.token}`;
+      configure({ axios });
+      userCall().then((result) => {
+        setUserId(result?.data?.id);
+        setUserName(result?.data?.username);
+      });
+      navigate("/");
+      toast(Messages.LoginSuccessMessage);
     } else {
-      toast(Messages.RegisterErrorMessage);
+      toast(Messages.LoginErrorMessage);
     }
   };
 
@@ -60,17 +80,17 @@ const UserRegister = () => {
       <Container>
         <Form>
           <Form.Label className=" d-flex justify-content-center mt-5">
-            {FormTexts.RegisterMessage}
+            {FormTexts.LoginMessage}
           </Form.Label>
-          <Form.Group className="mb-3" controlId="email">
-            <Form.Label>{FormTexts.Email}</Form.Label>
+          <Form.Group className="mb-3" controlId="userName">
+            <Form.Label>{FormTexts.UserName}</Form.Label>
             <Controller
               control={control}
-              name="email"
+              name="userName"
               render={({ field: { onChange, value, ref } }) => (
                 <Form.Control
-                  type="email"
-                  placeholder={FormTexts.Email}
+                  type="text"
+                  placeholder={FormTexts.UserName}
                   onChange={onChange}
                   value={value}
                   ref={ref}
@@ -96,30 +116,13 @@ const UserRegister = () => {
               rules={{ required: true }}
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="userName">
-            <Form.Label>{FormTexts.UserName}</Form.Label>
-            <Controller
-              control={control}
-              name="userName"
-              render={({ field: { onChange, value, ref } }) => (
-                <Form.Control
-                  type="text"
-                  placeholder={FormTexts.UserName}
-                  onChange={onChange}
-                  value={value}
-                  ref={ref}
-                />
-              )}
-              rules={{ required: true }}
-            />
-          </Form.Group>
           <div className="d-grid gap-2">
             <Button
               variant="success"
               type="submit"
-              onClick={handleSubmit(register)}
+              onClick={handleSubmit(loginUser)}
             >
-              {FormTexts.Create}
+              {FormTexts.Login}
             </Button>
           </div>
           <div className="d-flex gap-2 mt-2">
@@ -134,4 +137,4 @@ const UserRegister = () => {
   );
 };
 
-export default UserRegister;
+export default Login;

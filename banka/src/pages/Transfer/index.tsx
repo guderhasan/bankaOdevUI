@@ -1,41 +1,42 @@
 import axios, { HttpStatusCode } from "axios";
 import useAxios, { configure } from "axios-hooks";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { IQueryFormValues } from "./type";
 import { ITransferRequest, ITransferResponse } from "../../model/Transfer/type";
 import { Messages } from "../../localization/tr/messages/type";
 import { toast, ToastContainer } from "react-toastify";
 import { Button, Container, Form } from "react-bootstrap";
 import { FormTexts } from "../../localization/tr/formTexts/type";
-import { useContext } from "react";
-import { ContextAccountNumber } from "../GlobalContext";
 import NavbarPage from "../Navbar";
+
+//Transfer Önceden Bir Sayfa İdi. Sonrasında Modal Şeklinde Değiştirdim. Bu Sayfa Yerine TransferModal Sayfası Kullanılıyor.
 
 const Transfer: React.FC = () => {
   //Farklı dosyalarda konfigurasyonları yapılabilir.
   const BASE_API_URL = "http://localhost:8080/api";
   axios.defaults.baseURL = BASE_API_URL;
   axios.defaults.headers.common["Content-Type"] = "application/json";
+
   configure({ axios });
 
-  //ContextApi ile id alındı, security yapılmadığından bu öntem uygulandı
-  const senderAccountNumber = useContext(ContextAccountNumber);
+  const { handleSubmit, control, reset } = useForm<IQueryFormValues>({
+    defaultValues: { balance: 0, receiver: "" },
+  });
 
-  const { handleSubmit, getValues, control, reset } = useForm<IQueryFormValues>(
-    {
-      defaultValues: { balance: 0, receiver: "" },
-    }
-  );
+  const [receiverVal, balanceVal] = useWatch({
+    control,
+    name: ["receiver", "balance"],
+  });
 
   const [, trasferServiceCall] = useAxios<ITransferResponse, ITransferRequest>(
     {
       url: "/transactions/transfer",
       method: "POST",
-      // Normalde data kullanılmalı fakat data payload okunamadığından dolayı params kullanıldı
-      params: {
-        receiver: getValues("receiver"),
-        sender: senderAccountNumber,
-        balance: getValues("balance"),
+
+      data: {
+        receiver: receiverVal,
+        sender: "sil",
+        balance: balanceVal,
       },
     },
     { manual: true }

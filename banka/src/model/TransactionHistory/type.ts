@@ -1,4 +1,4 @@
-export interface ITransactionHistoryRequest{ accountId : string}
+export interface ITransactionHistoryRequest{ id : string}
 export interface ITransactionHistoryResponse{
     receiverNumber: string;
     senderNumber: string;

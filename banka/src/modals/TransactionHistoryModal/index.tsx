@@ -4,10 +4,6 @@ import DataTable from "react-data-table-component";
 import { Button, Container, Modal } from "react-bootstrap";
 import { TableTexts } from "../../localization/tr/tableTexts/type";
 import useAxios, { configure } from "axios-hooks";
-import {
-  IAccountDetailRequest,
-  IAccountDetailResponse,
-} from "../../model/AccountDetail/type";
 import axios, { HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
 import { Messages } from "../../localization/tr/messages/type";
@@ -28,6 +24,7 @@ const TransactionHistoryModal: React.FC<ITransactionHistoryModalProps> = ({
   const BASE_API_URL = "http://localhost:8080/api";
   axios.defaults.baseURL = BASE_API_URL;
   axios.defaults.headers.common["Content-Type"] = "application/json";
+
   configure({ axios });
 
   const handleClose = () => {
@@ -42,7 +39,7 @@ const TransactionHistoryModal: React.FC<ITransactionHistoryModalProps> = ({
     {
       url: "/transactions/account",
       method: "GET",
-      // Normalde data kullanılmalı fakat data payload okunamadığından dolayı params kullanıldı
+
       params: {
         id: accountId,
       },

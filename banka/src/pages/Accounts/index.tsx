@@ -9,7 +9,6 @@ import useAxios, { configure } from "axios-hooks";
 import axios, { HttpStatusCode } from "axios";
 import { Messages } from "../../localization/tr/messages/type";
 import { toast } from "react-toastify";
-import { Context } from "../GlobalContext";
 import {
   IAccountsByNameRequest,
   IAccountsByNumberRequest,
@@ -20,31 +19,33 @@ import AccountsModal from "../../modals/AccountDetailModal";
 import TransactionHistoryModal from "../../modals/TransactionHistoryModal";
 import AccountUpdateModal from "../../modals/AccountUpdateModal";
 import NavbarPage from "../Navbar";
+import { AuthContext } from "../../AuthContext";
+import TransferModal from "../../modals/TransferModal";
 
 const Accounts: React.FC = () => {
   //Farklı dosyalarda konfigurasyonları yapılabilir.
   const BASE_API_URL = "http://localhost:8080/api";
   axios.defaults.baseURL = BASE_API_URL;
   axios.defaults.headers.common["Content-Type"] = "application/json";
+
   configure({ axios });
 
-  //ContextApi ile id alındı, security yapılmadığından bu yöntem uygulandı
-  const userId = useContext(Context);
+  const { userId } = useContext(AuthContext);
+
   const [accountsData, setAccountsData] = useState<IAccountsResponse[]>();
   const [accountId, setAccountId] = useState<string>("");
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModalTransfer, setOpenModalTransfer] = useState<boolean>(false);
   const [openModalTransaction, setOpenModalTransaction] =
     useState<boolean>(false);
   const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
 
-  const { handleSubmit, getValues, control, reset } = useForm<IQueryFormValues>(
-    {
-      defaultValues: { nameORNumber: "" },
-    }
-  );
-  const searchTypeVal = useWatch({
+  const { handleSubmit, control, reset } = useForm<IQueryFormValues>({
+    defaultValues: { nameORNumber: "" },
+  });
+  const [searchTypeVal, nameOrNumberVal] = useWatch({
     control,
-    name: "searchType",
+    name: ["searchType", "nameORNumber"],
   });
 
   const [, accountByNameServiceCall] = useAxios<
@@ -54,9 +55,8 @@ const Accounts: React.FC = () => {
     {
       url: "/accounts/search/name",
       method: "POST",
-      // Normalde data kullanılmalı fakat data payload okunamadığından dolayı params kullanıldı
       params: {
-        name: getValues("nameORNumber"),
+        name: nameOrNumberVal,
         id: userId,
       },
     },
@@ -70,9 +70,9 @@ const Accounts: React.FC = () => {
     {
       url: "/accounts/search/number",
       method: "POST",
-      // Normalde data kullanılmalı fakat data payload okunamadığından dolayı params kullanıldı
+
       params: {
-        number: getValues("nameORNumber"),
+        number: nameOrNumberVal,
         id: userId,
       },
     },
@@ -201,6 +201,7 @@ const Accounts: React.FC = () => {
             setOpenModalTransaction={setOpenModalTransaction}
             setOpenModal={setOpenModal}
             setOpenModalUpdate={setOpenModalUpdate}
+            setOpenModalTransfer={setOpenModalTransfer}
           />
         </Row>
       </Container>
@@ -218,6 +219,11 @@ const Accounts: React.FC = () => {
         open={openModalUpdate}
         accountId={accountId}
         setOpenModal={setOpenModalUpdate}
+      />
+      <TransferModal
+        open={openModalTransfer}
+        accountId={accountId}
+        setOpenModal={setOpenModalTransfer}
       />
     </>
   );

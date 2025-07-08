@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { IQueryFormValues } from "./type";
 import { Form, Button, Container } from "react-bootstrap";
 import { FormTexts } from "../../localization/tr/formTexts/type";
@@ -8,27 +8,31 @@ import useAxios, { configure } from "axios-hooks";
 import axios, { HttpStatusCode } from "axios";
 import { Messages } from "../../localization/tr/messages/type";
 import { toast, ToastContainer } from "react-toastify";
-import { Context } from "../GlobalContext";
 import {
   IAccountCreateRequest,
   IAccountCreateResponse,
 } from "../../model/AccountCretae/type";
 import NavbarPage from "../Navbar";
+import { AuthContext } from "../../AuthContext";
 
 const AccountCreate = () => {
   //Farklı dosyalarda konfigurasyonları yapılabilir.
   const BASE_API_URL = "http://localhost:8080/api";
   axios.defaults.baseURL = BASE_API_URL;
   axios.defaults.headers.common["Content-Type"] = "application/json";
+
   configure({ axios });
 
-  //ContextApi ile id alındı, security yapılmadığından bu öntem uygulandı
-  const userId = useContext(Context);
-  const { handleSubmit, getValues, control, reset } = useForm<IQueryFormValues>(
-    {
-      defaultValues: { name: "" },
-    }
-  );
+  const { userId } = useContext(AuthContext);
+
+  const { handleSubmit, control, reset } = useForm<IQueryFormValues>({
+    defaultValues: { name: "" },
+  });
+
+  const nameVal = useWatch({
+    control,
+    name: "name",
+  });
 
   const [, createAccountServiceCall] = useAxios<
     IAccountCreateResponse,
@@ -37,10 +41,10 @@ const AccountCreate = () => {
     {
       url: "/accounts/create",
       method: "POST",
-      // Normalde data kullanılmalı fakat data payload okunamadığından dolayı params kullanıldı
+
       params: {
         number: "Bank-" + (100 + Math.random() * 999).toFixed(),
-        name: getValues("name"),
+        name: nameVal,
         id: userId,
       },
     },

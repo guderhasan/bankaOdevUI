@@ -15,5 +15,8 @@ export enum Messages {
   TransferErrorMessage ="Transfer Başarısız",
   TransferSuccessMessage = "Transfer Başarılı",
   DeleteError = "Silme Başarısız",
-  DeleteSuccess = "Silme Başarılı"
+  DeleteSuccess = "Silme Başarılı",
+  LoginErrorMessage = "Giriş Başarısız",
+  LoginSuccessMessage = "Giriş Başarılı",
+  SendMoney ="PARA GÖNDER"
 }

@@ -10,7 +10,7 @@ import {
   IAccountUpdateRequest,
   IAccountUpdateResponse,
 } from "../../model/AccountUpdate/type";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { FormTexts } from "../../localization/tr/formTexts/type";
 
 const AccountUpdateModal: React.FC<IAccountUpdateModalProps> = ({
@@ -22,13 +22,17 @@ const AccountUpdateModal: React.FC<IAccountUpdateModalProps> = ({
   const BASE_API_URL = "http://localhost:8080/api";
   axios.defaults.baseURL = BASE_API_URL;
   axios.defaults.headers.common["Content-Type"] = "application/json";
+
   configure({ axios });
 
-  const { handleSubmit, getValues, control, reset } = useForm<IQueryFormValues>(
-    {
-      defaultValues: { name: "" },
-    }
-  );
+  const { handleSubmit, control, reset } = useForm<IQueryFormValues>({
+    defaultValues: { name: "" },
+  });
+
+  const nameVal = useWatch({
+    control,
+    name: "name",
+  });
 
   const handleClose = () => {
     setOpenModal(false);
@@ -42,10 +46,10 @@ const AccountUpdateModal: React.FC<IAccountUpdateModalProps> = ({
     {
       url: "/accounts/update",
       method: "PUT",
-      // Normalde data kullanılmalı fakat data payload okunamadığından dolayı params kullanıldı
+
       params: {
         id: accountId,
-        name: getValues("name"),
+        name: nameVal,
       },
     },
     { manual: true }

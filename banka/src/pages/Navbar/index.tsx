@@ -9,6 +9,7 @@ function NavbarPage() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
+            <Nav.Link href="login">{FormTexts.LoginMessage}</Nav.Link>
             <Nav.Link href="userRegister">{FormTexts.UserRegister}</Nav.Link>
             <Nav.Link href="createAccount">{FormTexts.AccountCreate}</Nav.Link>
             <Nav.Link href="accounts">{FormTexts.Accounts}</Nav.Link>

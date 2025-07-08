@@ -23,6 +23,7 @@ const AccountsModal: React.FC<IAccountsModalProps> = ({
   const BASE_API_URL = "http://localhost:8080/api";
   axios.defaults.baseURL = BASE_API_URL;
   axios.defaults.headers.common["Content-Type"] = "application/json";
+
   configure({ axios });
 
   const handleClose = () => {
@@ -37,7 +38,7 @@ const AccountsModal: React.FC<IAccountsModalProps> = ({
     {
       url: "/accounts/accountDetail",
       method: "GET",
-      // Normalde data kullanılmalı fakat data payload okunamadığından dolayı params kullanıldı
+
       params: {
         id: accountId,
       },
